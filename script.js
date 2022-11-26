@@ -108,3 +108,17 @@ const calcDisplaySummery = function (account) {
 };
 
 calcDisplaySummery(account1);
+
+//CREATING USERNAMES FOR ALL ACCOUNTS
+
+const createUsername = function (accs) {
+  accs.forEach(function (acc) {
+    acc.userName = acc.owner
+      .toLowerCase()
+      .split(' ')
+      .map(un => un[0])
+      .join('');
+  });
+};
+createUsername(accounts);
+console.log(accounts);
