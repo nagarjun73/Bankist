@@ -84,7 +84,14 @@ const transactionHistory = function (account) {
     containerMovements.insertAdjacentHTML('afterbegin', markup);
   });
 };
-transactionHistory(account1);
+// transactionHistory(account1);
+
+//CALCULATE BALANCE
+
+const calcBalance = function (account) {
+  const balance = account.movements.reduce((acc, mov) => acc + mov, 0);
+  labelBalance.textContent = `${balance} €`;
+};
 
 // SHOW DEPOSITE, WITHDRAWAL AND INTRESTS
 const calcDisplaySummery = function (account) {
@@ -100,14 +107,14 @@ const calcDisplaySummery = function (account) {
 
   const intrest = account.movements
     .filter(mov => mov > 0)
-    .map(mov => (mov * 1.2) / 100)
+    .map(mov => (mov * account.interestRate) / 100)
     .filter(int => int >= 1)
     .reduce((acc, inc) => acc + inc, 0);
 
   labelSumInterest.textContent = `${intrest}€`;
 };
 
-calcDisplaySummery(account1);
+// calcDisplaySummery(account1);
 
 //CREATING USERNAMES FOR ALL ACCOUNTS
 
@@ -122,3 +129,37 @@ const createUsername = function (accs) {
 };
 createUsername(accounts);
 console.log(accounts);
+
+//LOGIN
+
+let correctAccount;
+btnLogin.addEventListener('click', function (e) {
+  e.preventDefault();
+  correctAccount = accounts.find(
+    acc => acc.userName === inputLoginUsername.value
+  );
+  console.log(correctAccount);
+
+  if (correctAccount?.pin === Number(inputLoginPin.value)) {
+    //DISPLAY UI AND MESSAGE
+    containerApp.style.opacity = 100;
+
+    labelWelcome.textContent = ` Welocome back! ${
+      correctAccount.owner.split(' ')[0]
+    }`;
+  }
+
+  //CLEAR INPUT FIELDS
+  inputLoginUsername.value = inputLoginPin.value = '';
+
+  inputLoginPin.blur();
+
+  //DISPLAY MOVEMENTS
+  transactionHistory(correctAccount);
+
+  //DISPLAY BALANCE
+  calcBalance(correctAccount);
+
+  //DISPLAY SUMMARY
+  calcDisplaySummery(correctAccount);
+});
