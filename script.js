@@ -64,12 +64,16 @@ const inputClosePin = document.querySelector('.form__input--pin');
 /////////////////////////////////////////////////
 
 //DISPLAY TRANSACTION HISTORY
-const transactionHistory = function (account) {
+const transactionHistory = function (account, sort = false) {
   // .textContent = 0
   containerMovements.innerHTML = '';
 
+  const movs = sort
+    ? account.movements.slice().sort((a, b) => a - b)
+    : account.movements;
+
   //LOOPING MOVEMENTS ARRAY
-  account.movements.forEach(function (mov, i) {
+  movs.forEach(function (mov, i) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
 
     const markup = `
@@ -222,7 +226,7 @@ btnClose.addEventListener('click', function (e) {
 
 //TAKING LOAN
 
-btnLoan.addEventListener.apply('click', function () {
+btnLoan.addEventListener('click', function (e) {
   e.preventDefault();
 
   const amount = Number(inputLoanAmount.value);
@@ -237,4 +241,12 @@ btnLoan.addEventListener.apply('click', function () {
   }
 
   inputLoanAmount.value = '';
+});
+
+//SORTING TRANSACTIONS
+let sorted = false;
+btnSort.addEventListener('click', function (e) {
+  e.preventDefault();
+  transactionHistory(correctAccount, !sorted);
+  sorted = !sorted;
 });
